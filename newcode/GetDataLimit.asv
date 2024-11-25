@@ -1,0 +1,39 @@
+function [Limit] = GetDataLimit(fileData, D)
+%UNTITLED2 此处显示有关此函数的摘要
+%   此处显示详细说明
+    
+    n=size(fileData,1);
+    
+    if D==3
+        dataMax=zeros(n,3);
+        dataMin=zeros(n,3);
+        for i =1:n
+            filename=fileData(i,2);
+            T=readtable(filename);
+            XYZdata=[T.X,T.Y,T.Z];
+            dataMax(i,:)=max(XYZdata,[],1); %取列的最值
+            dataMin(i,:)=min(XYZdata,[],1);
+        end
+ 
+    elseif D==2
+        for i =1:length(fileData)
+            filename=fileData(i,2);
+            T=readtable(filename);
+            XYdata=[T.X,T.Y];
+            dataMax(i,:)=max(XYdata,[],1); %取列的最值
+            dataMin(i,:)=min(XYdata,[],1);
+        end
+  
+        for i =1:length(LinesData)
+            T=LinesData(i).data;
+            XYdata=[T.X,T.Y];
+            dataMax(nP+i,:)=max(XYdata,[],1);
+            dataMin(nP+i,:)=min(XYdata,[],1);
+        end
+    end
+    dataMax=max(dataMax,[],1);
+    dataMin=min(dataMin,[],1);
+    B=(dataMax-dataMin).*0.2;
+    Limit = [dataMin-B;dataMax+B];      
+end
+

@@ -1,0 +1,31 @@
+t=0:pi/100:2*pi;
+x1=5*cos(t); %x即为椭圆周上的点的横坐标
+y1=3*sin(t); %y即为椭圆周上的点的纵坐标
+plot(x1,y1);
+hold on
+
+x2=6*cos(t);
+y2=4*sin(t);
+plot(x2,y2);
+hold on
+
+x3=1.5+8*cos(t);
+y3=5*sin(t);
+plot(x3,y3);
+hold on
+
+x4=1.5+sqrt(24.5)*cos(t)+sqrt(72)*sin(t);
+y4=sqrt(72)*sin(t)-sqrt(24.5)*cos(t);
+plot(x4,y4);
+hold on
+
+x1=x1';y1=y1';x2=x2';y2=y2';x3=x3';y3=y3';x4=x4';y4=y4';
+points_201=[x1,y1;x2,y2;x3,y3;x4,y4];
+f1=repmat(100,201,1);
+f2=repmat(200,201,1);
+f3=repmat(300,201,1);
+f4=repmat(400,201,1);
+F=[f1;f2;f3;f4];
+data=[x1,y1,f1];
+filename = 'E:/RZ_matlab/data/2Ddata/Lines/lines_1';
+writematrix(data,filename);
