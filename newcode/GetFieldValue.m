@@ -78,7 +78,7 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
     m=1;
     if tag==0 
             % eval(firstLine{1}{1});                           %将第一行当作命令执行，给E矩阵赋值
-            E=[1,16;0,1];
+            E=[1,0;0,1];
             P= PointsPotential(gridPoints,data, m, u, E, FuncType);
             f=data.F;
             F=repmat(f',N,1); 
