@@ -84,9 +84,8 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
             F=repmat(f',N,1); 
 
         elseif tag==1
-            eval(firstLine{1}{1});                             %将第一行当作命令执行，给E矩阵赋值，给f赋值
-            E=[4,1;2,4];
-            
+            %eval(firstLine{1}{1});                             %将第一行当作命令执行，给E矩阵赋值，给f赋值
+            E=[1,0;0,1];
             data=table2array(data);
             num=size(data,1);
             if num==1                                  %线数据文件只有一行数据时，按点计算 
@@ -97,8 +96,8 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
             F=repmat(f, N,1);
            
         elseif tag==2
-            E=[1,0;0,1];
             % eval(firstLine{1}{1});                             %将第一行当作命令执行，给f赋值
+            E=[1,0;0,1];
             P =LinePotential(gridPoints, data, u, FuncType, E);               
             F=repmat(f,N,1);
     end

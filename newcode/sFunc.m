@@ -10,6 +10,6 @@ function [Value] = sFunc(diff,m,E,u)   %diff=p-q
     E_pinv=pinv(E);
     temp=diff*E_pinv;
     dist = sqrt(sum(temp.^2, 2));
-    Value=m./(power(10,-12)+power(dist,u/2));
+    Value=m./(power(10,-12)+power(dist,0.8));
 
 end
