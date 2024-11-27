@@ -55,9 +55,17 @@ function [P, F] = GetPFData(gridPoints,fileData, u, FuncType)
     for i =1:n
         tag=fileData{i,1};
         filename = fileData{i,2};
-        fileID = fopen(filename,'r');
-        firstLine = textscan(fileID,'%s',1);            % 读取一行
-        fclose(fileID);    
+        fileID = fopen(filename,'rt');
+        line='';
+        for i = 1:1
+            line = fgetl(fileID);  % 读取当前行
+            if line == -1
+                error('文件中行数不足');
+            end
+        end
+        % firstLine = textscan(fileID,'%s',1);            % 读取一行
+        fclose(fileID); 
+        firstLine = str2double(regexp(line, '\d+(\.\d+)?', 'match'));
         % eval(firstLine{1}{1});                             %执行第一行
         data=readtable(filename);                      %按表格读取文件
 
@@ -83,7 +91,7 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
             f=data.F;
             F=repmat(f',N,1); 
 
-        elseif tag==1
+    elseif tag==1
             %eval(firstLine{1}{1});                             %将第一行当作命令执行，给E矩阵赋值，给f赋值
             E=[1,0;0,1];
             data=table2array(data);
@@ -92,10 +100,11 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
                 P = PointsPotential(gridPoints,data, m, u, E, FuncType);
             elseif num>1                              %多于一行时，按线计算
                 P= LinePotential(gridPoints, data, u,FuncType, E);
-            end   
-            F=repmat(f, N,1);
+            end 
+            
+            F=repmat(firstLine, N,1);
            
-        elseif tag==2
+    elseif tag==2
             % eval(firstLine{1}{1});                             %将第一行当作命令执行，给f赋值
             E=[1,0;0,1];
             P =LinePotential(gridPoints, data, u, FuncType, E);               

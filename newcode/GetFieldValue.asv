@@ -29,7 +29,6 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
 end
 
 
-
 function [P, F] = GetPFData(gridPoints,fileData, u, FuncType)
 %得到包括势函数值和对应属性值两列的数据
 % gridPoints为待插值点；
@@ -57,80 +56,28 @@ function [P, F] = GetPFData(gridPoints,fileData, u, FuncType)
         tag=fileData{i,1};
         filename = fileData{i,2};
         fileID = fopen(filename,'r');
+        line='';
+        for i = 1:n
+            line = fgetl(fid);  % 读取当前行
+            if line == -1
+                error('文件中行数不足');
+            end
+        end
         firstLine = textscan(fileID,'%s',1);            % 读取一行
         fclose(fileID);    
         % eval(firstLine{1}{1});                             %执行第一行
         data=readtable(filename);                      %按表格读取文件
 
-        [newP, newF]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType);       %计算data产生的势函数P和对应的F
-        [P]=horzcat(P,newP);    [F]=horzcat(F,newF);                %合并存储入P,F
-                 
-        % diff1=table2array(mean(data(:,D))-dataMin(:,D));       %计算data第D列平均值与阈值h比大小
-        % diff2=table2array(mean(data(:,D))-dataMax(:,D));
-        % firstLine=char(firstLine{1});
-        % if abs(diff1)<h                                                              %小于阈值的将数据平移后存储为新的文件
-        %     data(:,D)=data(:,D)-h;
-        %     filename=sprintf("dataAdjust_%d_Min.txt", r);
-        %     fileFullPath=fullfile(folderName,filename);  
-        %     writeFirstline(firstLine, data, fileFullPath);                % 将内容写入新文件  
-        %     newfileData{r,1}=tag;                                               %记录文件地址及其类型
-        %     newfileData{r,2}=fileFullPath;
-        %     r=r+1;  
-        % 
-        % elseif abs(diff2)<h
-        %     data(:,D)=data(:,D)+h;
-        %     filename=sprintf("dataAdjust_%d_Max.txt", r);
-        %     fileFullPath=fullfile(folderName,filename);  
-        %     writeFirstline(firstLine, data, fileFullPath);                % 将内容写入新文件 
-        %     newfileData{r,1}=tag;                                               %记录文件地址及其类型
-        %     newfileData{r,2}=fileFullPath;
-        %     r=r+1;  
-        % end
-
+        [newP, newF]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType);  
+        %计算data产生的势函数P和对应的F
+        [P]=horzcat(P,newP);    
+        [F]=horzcat(F,newF);                %合并存储入P,F
         waitbar(i/n,fig,'计算中...')
     end
 
-    % Fmin=min(F,[],"all");
-    % Fmax=max(F,[],"all");
-    % 
-    % for i =1:size(newfileData,1)                         %计算扩充的数据产生的势函数P和对应的F
-    %     tag=newfileData{i,1};
-    %     filename = newfileData{i,2};
-    %     fileID = fopen(filename,'r');
-    %     firstLine = textscan(fileID,'%s',1);            % 读取一行
-    %     fclose(fileID);    
-    %     data=readtable(filename);                      %按表格读取文件
-    %     j=0;
-    %     if endsWith(filename, 'Min.txt')
-    %        [newP, newF]=PFCalculate(gridPoints, tag, firstLine,data,u,FuncType);
-    %         newF=newF-0.2.*(Fmax-Fmin);
-    %         [P]=horzcat(P,newP);    [F]=horzcat(F,newF);         
-    %     elseif endsWith(filename, 'Max.txt')
-    %         [newP, newF]=PFCalculate(gridPoints, tag, firstLine,data,u,FuncType);
-    %         newF=newF+0.2.*(Fmax-Fmin);
-    %         [P]=horzcat(P,newP);    [F]=horzcat(F,newF);       
-    %     end
-    % 
-    %     waitbar(i/size(newfileData,1),fig,'计算中...')
-    % end
-    % 
-    % if existFolder==0                                        %此文件夹原始不存在，计算完毕删除该文件夹
-    %     delete(folderName)
-    % elseif existFolder==1                                  %此文件夹原始存在，计算完毕删除写入的文件
-    %     filesList = dir(fullfile(folderName,'*.txt'));
-    %     for i = 1:length(filesList)
-    %         if endsWith(filesList(i).name, 'Max.txt')|| endsWith(filesList(i).name, 'Min.txt') % 判断文件后缀名
-    %             deleteFile = fullfile(folderName, filesList(i).name);
-    %             delete(deleteFile)
-    %         end
-    %     end   
-    % end
-    % 
     waitbar(1,fig,'计算完毕');
     close(fig);
 end
-
-
 
 function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
     P=[];F=[];
@@ -138,28 +85,28 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
     m=1;
     if tag==0 
             % eval(firstLine{1}{1});                           %将第一行当作命令执行，给E矩阵赋值
-            E=[1,16;0,1];
-            
+            E=[1,0;0,1];
             P= PointsPotential(gridPoints,data, m, u, E, FuncType);
             f=data.F;
             F=repmat(f',N,1); 
 
-        elseif tag==1
-            eval(firstLine{1}{1});                             %将第一行当作命令执行，给E矩阵赋值，给f赋值
-            E=[4,1;2,4];
-            
+    elseif tag==1
+            %eval(firstLine{1}{1});                             %将第一行当作命令执行，给E矩阵赋值，给f赋值
+            E=[1,0;0,1];
             data=table2array(data);
             num=size(data,1);
             if num==1                                  %线数据文件只有一行数据时，按点计算 
                 P = PointsPotential(gridPoints,data, m, u, E, FuncType);
             elseif num>1                              %多于一行时，按线计算
                 P= LinePotential(gridPoints, data, u,FuncType, E);
-            end   
+            end 
+            
+            f=value(:); % 可以将其显示出来，这里value就是5
             F=repmat(f, N,1);
            
-        elseif tag==2
-            E=[1,0;0,1];
+    elseif tag==2
             % eval(firstLine{1}{1});                             %将第一行当作命令执行，给f赋值
+            E=[1,0;0,1];
             P =LinePotential(gridPoints, data, u, FuncType, E);               
             F=repmat(f,N,1);
     end
