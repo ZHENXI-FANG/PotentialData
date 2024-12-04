@@ -8,7 +8,7 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
        [m,q,~,~]= getParameters(points, polyline);      
        if FuncType=='s'    
            diff=points-q;
-           [Potential]= sFunc(diff,m,E,u);
+           [Potential]= Line_sfunc(diff,m,E,u);
        elseif FuncType=='g'    
            diff=points-q;
            [Potential]= gFunc(diff,m,E,u);

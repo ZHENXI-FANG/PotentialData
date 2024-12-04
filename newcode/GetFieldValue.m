@@ -12,6 +12,7 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
         total_P=sum(P,2);
         W=P./total_P;
         W(isnan(W))=1;
+        % New_W=W*0.85;
         FieldValue=sum(F.*W,2);
         
     elseif FusionFunc=="ExpAdd"           %数据指数相加融合
@@ -108,7 +109,7 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
             % eval(firstLine{1}{1});                             %将第一行当作命令执行，给f赋值
             E=[1,0;0,1];
             P =LinePotential(gridPoints, data, u, FuncType, E);               
-            F=repmat(f,N,1);
+            F=repmat(firstLine,N,1);
     end
 end
 
