@@ -5,10 +5,17 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
     n=size(polyline,2);  %·µ»ØpolylineÁÐÊý
     if n<4
        % polyline=table2array(polylinedata);      
-       [m,q,~,~]= getParameters(points, polyline);      
+       [m,q,t,~]= getParameters(points, polyline);     
+       % if D==2
+       %     W=[1-t,]
+       %     E=;
+       % elseif D==3
+       %     E=;
+       % end
+
        if FuncType=='s'    
            diff=points-q;
-           [Potential]= Line_sfunc(diff,m,E,u);
+           [Potential]= sFunc(diff,m,E,u);
        elseif FuncType=='g'    
            diff=points-q;
            [Potential]= gFunc(diff,m,E,u);
