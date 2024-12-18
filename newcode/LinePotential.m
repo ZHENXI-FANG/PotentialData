@@ -5,7 +5,7 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
     n=size(polyline,2);  %·µ»ØpolylineÁÐÊý
     if n<4
        % polyline=table2array(polylinedata);      
-       [m,q,t,~]= getParameters(points, polyline);     
+       [m,q,~,~]= getParameters(points, polyline);     
        % if D==2
        %     W=[1-t,]
        %     E=;

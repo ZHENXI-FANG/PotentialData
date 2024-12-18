@@ -5,7 +5,13 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
 
     %计算势函数值及属性值
     [P, F] = GetPFData(gridPoints, fileData, u, FuncType); 
+
+    Before_P=table(P);
     
+    % filename3='D:\PotentialData\data\2Dtest\1128test\before_V.xlsx';
+    % writetable(Before_P,filename3);
+
+
     fig=waitbar(0,'插值中...');                    %进度条提示
 
     if FusionFunc=="Add"                       %数据直接相加融合
@@ -26,6 +32,22 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     
     waitbar(1,fig,'插值完成');                      %插值结束进度条提示
     close(fig)
+
+
+    % V=table(P);
+    % f=table(F);
+    % C=table(FieldValue);
+    % T_W=table(W);
+    % % filename='D:\PotentialData\data\2Dtest\1128test\V.xlsx';
+    % filename1='D:\PotentialData\data\2Dtest\1128test\F.xlsx';
+    % filename2='D:\PotentialData\data\2Dtest\1128test\c.xlsx';
+    % filename4='D:\PotentialData\data\2Dtest\1128test\t_w.xlsx';
+    % % writetable(V,filename);
+    % writetable(f,filename1);
+    % writetable(C,filename2);
+    % writetable(T_W,filename4);
+    % disp(['数据已经保存到',filename1]);
+
 
 end
 
