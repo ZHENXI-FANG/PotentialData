@@ -1,17 +1,21 @@
 function [Eq] = EqCalculate(t, Ea, Eb, Eab, Eba)
 %生成带宽矩阵Eq
-% 
+
     W=[Ea, Eab; Eba, Eb];
     [m,n] = size(W);
-    E1 = zeros(n/2 , m);
-    E2 = zeros(n/2 , m);
-    for i=1:length(n/2)
-        E1(i,i) = 1-t;
-        E2(i,i) = t;
+    E1 = zeros(n/2 , m/2);
+    E2 = zeros(n/2 , m/2);
+    N_t=size(t,1);
+    for j=1:N_t
+        t=t[j,1];
+        for i=1:length(n/2)
+            E1(i,i) = 1-t;
+            E2(i,i) = t;
+        end
+        E=[E1,E2];
+        Eq=E* W* E.';
     end
-    E=[E1,E2];
-    Eq=E* W* E.';
-
+                
 end
 
 % test

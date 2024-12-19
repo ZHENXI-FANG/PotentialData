@@ -1,9 +1,26 @@
 function [Value] = gFunc(diff,m,E,u)
 %高斯函数
 
-    A= pinv(E) * diff';
-    B=diff.*A';
-    temp=sum(B,2);
-    Value=m./exp(power(temp,0.8));
+    % A= pinv(E) * diff';
+    % B=diff.*A';
+    % temp=sum(B,2);
+    % Value=m./exp(power(temp,0.8));
+    D=size(diff,1);
+    Value=zeros(D,1);
+    for i=1:D
+        dimn=diff(i,1);
+        E=disp(E{i});
+        A=pinv(E)*dimn';
+        B=dimn.*A';
+        temp=sum(B,2);
+        Value_i=m./exp(power(temp,0.8));
+        va
+
+
+       
+    end
 
 end
+
+
+ 

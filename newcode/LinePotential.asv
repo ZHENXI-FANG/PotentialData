@@ -2,10 +2,20 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
 %计算一条线poline在p出产生的势函数值
 %   此处显示详细说明    
     [R,D]=size(points);
-    n=size(polyline,2);
+    n=size(polyline,2);  %返回polyline列数
     if n<4
        % polyline=table2array(polylinedata);      
-       [m,q,~,~]= getParameters(points, polyline);      
+       [m,q,t,~]= getParameters(points, polyline);     
+       if D==2
+           Ea=[];
+           Eb=[];
+           Eab=[];
+           Eba=[];
+           E=EqCalculate(t,Ea,Eb,Eab,Eba);
+       elseif D==3
+           E=;
+       end
+
        if FuncType=='s'    
            diff=points-q;
            [Potential]= sFunc(diff,m,E,u);

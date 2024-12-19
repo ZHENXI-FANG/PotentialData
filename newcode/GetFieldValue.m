@@ -7,9 +7,8 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     [P, F] = GetPFData(gridPoints, fileData, u, FuncType); 
 
     Before_P=table(P);
-    
-    % filename3='D:\PotentialData\data\2Dtest\1128test\before_V.xlsx';
-    % writetable(Before_P,filename3);
+    filename3='D:\PotentialData\data\2Dtest\1218test\E_PotentialValue.xlsx';
+    writetable(Before_P,filename3);
 
 
     fig=waitbar(0,'插值中...');                    %进度条提示
@@ -34,15 +33,15 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     close(fig)
 
 
-    % V=table(P);
+    V=table(P);
     % f=table(F);
     % C=table(FieldValue);
     % T_W=table(W);
-    % % filename='D:\PotentialData\data\2Dtest\1128test\V.xlsx';
+    filename='D:\PotentialData\data\2Dtest\1218test\E_exp_PotentialValue.xlsx';
     % filename1='D:\PotentialData\data\2Dtest\1128test\F.xlsx';
     % filename2='D:\PotentialData\data\2Dtest\1128test\c.xlsx';
     % filename4='D:\PotentialData\data\2Dtest\1128test\t_w.xlsx';
-    % % writetable(V,filename);
+    writetable(V,filename);
     % writetable(f,filename1);
     % writetable(C,filename2);
     % writetable(T_W,filename4);
@@ -116,7 +115,7 @@ function [P, F]=PFCalculate(gridPoints, tag,firstLine, data,u,FuncType)
 
     elseif tag==1
             %eval(firstLine{1}{1});                             %将第一行当作命令执行，给E矩阵赋值，给f赋值
-            E=[1,0;0,1];
+            E=[0.8,0;0,0.8];
             data=table2array(data);
             num=size(data,1);
             if num==1                                  %线数据文件只有一行数据时，按点计算 
