@@ -19,11 +19,3 @@ function [Eq] = EqCalculate(t, Ea, Eb, Eab, Eba)
     end
                 
 end
-
-% test
-% t=0.3;
-% Ea=[1,1,0;0,1,0;0,0,1];
-% Eb=[1,1,0;0,1,0;0,0,1];
-% Eab=[0,0,0;0,1,0;0,0,1];
-% Eba=[0,0,0;0,0,0;0,0,0];
-% Eq=EqCalculate(t, Ea, Eb, Eab, Eba)

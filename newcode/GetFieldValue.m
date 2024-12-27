@@ -7,9 +7,8 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     [P, F] = GetPFData(gridPoints, fileData, u, FuncType); 
 
     Before_P=table(P);
-    filename3='D:\PotentialData\data\2Dtest\1218test\E_PotentialValue.xlsx';
+    filename3='D:\PotentialData\data\2Dtest\1224test\E_PotentialValue.xlsx';
     writetable(Before_P,filename3);
-
 
     fig=waitbar(0,'插值中...');                    %进度条提示
 
@@ -35,19 +34,17 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
 
     V=table(P);
     % f=table(F);
-    % C=table(FieldValue);
-    % T_W=table(W);
-    filename='D:\PotentialData\data\2Dtest\1218test\E_exp_PotentialValue.xlsx';
+    C=table(FieldValue);
+    T_W=table(W);
+    filename='D:\PotentialData\data\2Dtest\1224test\E_exp_PotentialValue.xlsx';
     % filename1='D:\PotentialData\data\2Dtest\1128test\F.xlsx';
-    % filename2='D:\PotentialData\data\2Dtest\1128test\c.xlsx';
-    % filename4='D:\PotentialData\data\2Dtest\1128test\t_w.xlsx';
+    filename2='D:\PotentialData\data\2Dtest\1224test\FieldValue.xlsx';
+    filename4='D:\PotentialData\data\2Dtest\1224test\W.xlsx';
     writetable(V,filename);
     % writetable(f,filename1);
-    % writetable(C,filename2);
-    % writetable(T_W,filename4);
+    writetable(C,filename2);
+    writetable(T_W,filename4);
     % disp(['数据已经保存到',filename1]);
-
-
 end
 
 

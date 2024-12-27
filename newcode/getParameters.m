@@ -17,8 +17,9 @@ function [m,q,t,ind] = getParameters(points, polyline)
     Polyline(1,:,:) = polyline;
     Polyline=repmat(Polyline,nP,1,1);
     
-    Distance = vecnorm(Points - Polyline, 2, 3);  % 计算点集每个点到折点的欧氏距离
-    m=dmin.*sum(1./Distance,2); 
+    % Distance = vecnorm(Points - Polyline, 2, 3);  % 计算点集每个点到折点的欧氏距离
+    % m=dmin.*sum(1./Distance,2);
+    m=2;
 
     % if m(find(isnan(m))) == n
     %     %点与折点重合的情况，Distance为0，m为NaN
