@@ -1,8 +1,8 @@
 function [Potential] = LinePotential(points, polyline, u,FuncType, E)
-%¼ÆËãÒ»ÌõÏßpolineÔÚp³ö²úÉúµÄÊÆº¯ÊıÖµ
-%   ´Ë´¦ÏÔÊ¾ÏêÏ¸ËµÃ÷    
+%è®¡ç®—ä¸€æ¡çº¿polineåœ¨på‡ºäº§ç”Ÿçš„åŠ¿å‡½æ•°å€¼
+%   æ­¤å¤„æ˜¾ç¤ºè¯¦ç»†è¯´æ˜    
     [R,D]=size(points);
-    n=size(polyline,2);  %·µ»ØpolylineÁĞÊı
+    n=size(polyline,2);  %è¿”å›polylineåˆ—æ•°
     if n<4
        % polyline=table2array(polylinedata);      
        [m,q,t,~]= getParameters(points, polyline);
@@ -24,10 +24,10 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
         % hold off;
 
        if D==2
-           Ea=[50,0;0,50];
-           Eb=[50,0;0,50];
-           Eab=[40,0;0,40];
-           Eba=[40,0;0,40];
+           Ea=[100,0;0,100];
+           Eb=[100,0;0,100];
+           Eab=[50,0;0,50];
+           Eba=[50,0;0,50];
            E=EqCalculate(t,Ea,Eb,Eab,Eba);
 
        % elseif D==3
@@ -62,7 +62,7 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
         Eba=cell(R,1);
         Eq=cell(R,1);
         Potential=zeros(R,1);
-        for j=1:R            %¸Ä²¢ĞĞ            
+        for j=1:R            %æ”¹å¹¶è¡Œ            
             Ea{j}=ParseMatrix(Eastr(j,:)); 
             Eb{j}=ParseMatrix(Ebstr(j,:));
             Eab{j}=ParseMatrix(Eabstr(j,:));

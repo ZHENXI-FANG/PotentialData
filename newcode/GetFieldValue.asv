@@ -6,9 +6,27 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     %计算势函数值及属性值
     [P, F] = GetPFData(gridPoints, fileData, u, FuncType); 
 
-    Before_P=table(P);
-    filename3='D:\PotentialData\data\2Dtest\1218test\E_PotentialValue.xlsx';
-    writetable(Before_P,filename3);
+    % P=exp(P);
+    % total_P=sum(P,2);
+    % C=horzcat(gridPoints,total_P);
+    % x=C(:,1);
+    % y=C(:,2);
+    % colorData=C(:,3);
+    % scatter(x,y,50,colorData,'filled');
+    % colormap(jet);
+    % colorbar;
+    % xlabel('X');
+    % ylabel('Y');
+    % title('Eab/Eba=100 value of potential');
+    % hold on;
+    % linex=[50.3298377650605,40.2712424725111,30.7756589957772,20.6175091431276];
+    % liney=[16.0748038493699,25.8222608101183,29.4387799197674,29.6781699888896];
+    % plot(linex,liney,'r-','LineWidth',2);
+    % hold off;
+
+    % Before_P=table(P);
+    % filename3='D:\PotentialData\data\2Dtest\1224test\E_PotentialValue.xlsx';
+    % writetable(Before_P,filename3);
 
     fig=waitbar(0,'插值中...');                    %进度条提示
 
@@ -16,15 +34,58 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
         total_P=sum(P,2);
         W=P./total_P;
         W(isnan(W))=1;
-        % New_W=W*0.85;
         FieldValue=sum(F.*W,2);
         
-    elseif FusionFunc=="ExpAdd"           %数据指数相加融合
+    elseif FusionFunc=="ExpAdd"  
+        %数据指数相加融合
         P=exp(P);
         total_P=sum(P,2);
         W=P./total_P;
+
+
+        % A=horzcat(gridPoints,W);
+        % % 提取各列数据
+        % x = A(:, 1);      % 第一列作为 X 轴
+        % y = A(:, 2);      % 第二列作为 Y 轴
+        % color1 = A(:, 3); % 第三列用于颜色映射（图1）
+        % color2 = A(:, 4); % 第四列用于颜色映射（图2）
+        % % 创建一个新的图形窗口
+        % figure;
+        % % 创建第一个子图：根据第三列的值进行颜色映射
+        % subplot(1, 2, 1);  % 1 行 2 列的子图，当前激活第1个
+        % scatter(x, y, 50, color1, 'filled');  % 50 是点的大小，'filled' 表示实心点
+        % colormap(jet);                       % 设置颜色映射为 'jet'，可根据需要选择其他 colormap
+        % colorbar;                            % 显示颜色条
+        % title('Scatter Plot - Color by W');
+        % xlabel('X Axis');
+        % ylabel('Y Axis');
+        % % 创建第二个子图：根据第四列的值进行颜色映射
+        % subplot(1, 2, 2);  % 当前激活第2个子图
+        % scatter(x, y, 50, color2, 'filled');  % 50 是点的大小，'filled' 表示实心点
+        % colormap(hot);                       % 设置颜色映射为 'hot'，可根据需要选择其他 colormap
+        % colorbar;                            % 显示颜色条
+        % title('Scatter Plot - Color by W');
+        % xlabel('X Axis');
+        % ylabel('Y Axis');
+
         W(isnan(W))=1;
+
+        % C=horzcat(gridPoints,W);
+        % x=C(:,1);
+        % y=C(:,2);
+        % colorData=C(:,3);
+        % scatter(x,y,50,colorData,'filled');
+        % colormap(jet);
+        % colorbar;
+        % xlabel('X');
+        % ylabel('Y');
+        % title('Scatter plot with color mapping based on value of potential');
+        
         FieldValue=sum(F.*W,2);
+        max_value=max(FieldValue);
+        min-value=min(FieldValue);
+        disp('最大值：',num2str(max_value),',最小值',num2str(min));
+
     end
 
     
@@ -36,10 +97,10 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     % f=table(F);
     % C=table(FieldValue);
     % T_W=table(W);
-    % filename='D:\PotentialData\data\2Dtest\1218test\E_exp_PotentialValue.xlsx';
+    % filename='D:\PotentialData\data\2Dtest\1224test\E_exp_PotentialValue.xlsx';
     % filename1='D:\PotentialData\data\2Dtest\1128test\F.xlsx';
-    % filename2='D:\PotentialData\data\2Dtest\1128test\c.xlsx';
-    % filename4='D:\PotentialData\data\2Dtest\1128test\t_w.xlsx';
+    % filename2='D:\PotentialData\data\2Dtest\1128test\FieldValue.xlsx';
+    % filename4='D:\PotentialData\data\2Dtest\1128test\W.xlsx';
     % writetable(V,filename);
     % writetable(f,filename1);
     % writetable(C,filename2);
