@@ -26,8 +26,8 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
        if D==2
            Ea=[50,0;0,50];
            Eb=[50,0;0,50];
-           Eab=[40,0;0,40];
-           Eba=[40,0;0,40];
+           Eab=[30,0;0,30];
+           Eba=[30,0;0,30];
            E=EqCalculate(t,Ea,Eb,Eab,Eba);
 
        % elseif D==3

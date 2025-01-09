@@ -6,18 +6,28 @@ function [FieldValue,total_P] = GetFieldValue( gridPoints, fileData, u, FuncType
     %计算势函数值及属性值
     [P, F] = GetPFData(gridPoints, fileData, u, FuncType); 
 
-    % P=exp(P);
-    % total_P=sum(P,2);
-    % C=horzcat(gridPoints,total_P);
-    % x=C(:,1);
-    % y=C(:,2);
-    % colorData=C(:,3);
-    % scatter(x,y,50,colorData,'filled');
-    % colormap(jet);
-    % colorbar;
-    % xlabel('X');
-    % ylabel('Y');
-    % title('Ea/Eb=50,Eab/Eba=40,The value of potential');
+    %Computing distance between L1 and L2;
+    filename1 = fileData{1,2};
+    filename2 = fileData{2,2};
+    L1=readtable(filename1);
+    L2=readtable(filename2);
+    L1_data=table2array(L1);
+    L2_data=table2array(L2);
+    dH=hausdorff_distance(L1_data,L2_data);
+    disp(['Hausdorff Distance:',num2str(dH)]);
+
+    P=exp(P);
+    total_P=sum(P,2);
+    C=horzcat(gridPoints,total_P);
+    x=C(:,1);
+    y=C(:,2);
+    colorData=C(:,3);
+    scatter(x,y,50,colorData,'filled');
+    colormap(jet);
+    colorbar;
+    xlabel('X');
+    ylabel('Y');
+    title('Ea/Eb=50,Eab/Eba=30,The value of potential');
     % hold on;
     % linex=[50.3298377650605,40.2712424725111,30.7756589957772,20.6175091431276];
     % liney=[16.0748038493699,25.8222608101183,29.4387799197674,29.6781699888896];
@@ -204,4 +214,11 @@ function writeFirstline(firstLine, data, fileFullPath)
     content=[firstLine,newline,dataStr];
     fwrite(fid_w, content, '*char');                    %写入新内容
     fclose(fid_w);
+end
+
+function dH = hausdorff_distance(A, B)
+    % A 和 B 是 n x 2 和 m x 2 的矩阵，分别代表两条折线的点坐标
+    d1 = max(min(pdist2(A, B), [], 2));
+    d2 = max(min(pdist2(B, A), [], 2));
+    dH = max(d1, d2);
 end
