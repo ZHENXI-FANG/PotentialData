@@ -24,14 +24,18 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
         % hold off;
 
        if D==2
-           Ea=[100,0;0,100];
-           Eb=[100,0;0,100];
-           Eab=[50,0;0,50];
-           Eba=[50,0;0,50];
+           Ea=[50,0;0,50];
+           Eb=[50,0;0,50];
+           Eab=[30,0;0,30];
+           Eba=[30,0;0,30];
            E=EqCalculate(t,Ea,Eb,Eab,Eba);
 
-       % elseif D==3
-       %     E=;
+       elseif D==3
+           Ea=[1,0,0;0,1,0;0,0,1];
+           Eb=[1,0,0;0,1,0;0,0,1];
+           Eab=[0.5,0,0;0,0.5,0;0,0,0.5];
+           Eba=[0.5,0,0;0,0.5,0;0,0,0.5];
+           E=EqCalculate(t,Ea,Eb,Eab,Eba);
        end
 
        if FuncType=='s'    

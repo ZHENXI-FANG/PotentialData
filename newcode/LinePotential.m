@@ -1,4 +1,4 @@
-function [Potential] = LinePotential(points, polyline, u,FuncType, E)
+function [Potential] = LinePotential(points, polyline, u,FuncType, E,num)
 %计算一条线poline在p出产生的势函数值
 %   此处显示详细说明    
     [R,D]=size(points);
@@ -6,23 +6,6 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
     if n<4
        % polyline=table2array(polylinedata);      
        [m,q,t,~]= getParameters(points, polyline);
-
-        % FF=size(t,1);    
-        % figure;
-        % scatter(1:FF,t,'filled');
-        % hold on;
-        % [max_value,max_idx]=max(t);
-        % [min_value,min_idx]=min(t);
-        % scatter(max_idx,max_value,100,'red','filled');
-        % scatter(min_idx,min_value,100,'blue','filled');
-        % text(max_idx, max_value, ['  Max: ', num2str(max_value)], 'Color', 'r', 'VerticalAlignment', 'bottom');
-        % text(min_idx, min_value, ['  Min: ', num2str(min_value)], 'Color', 'b', 'VerticalAlignment', 'top');
-        % title('Value of Potential');
-        % xlabel('Index');
-        % ylabel('Value');
-        % legend('Data', 'Max Value', 'Min Value');
-        % hold off;
-
        if D==2
            Ea=[50,0;0,50];
            Eb=[50,0;0,50];
@@ -30,16 +13,20 @@ function [Potential] = LinePotential(points, polyline, u,FuncType, E)
            Eba=[30,0;0,30];
            E=EqCalculate(t,Ea,Eb,Eab,Eba);
 
-       % elseif D==3
-       %     E=;
+       elseif D==3
+           Ea=[500,0,0;0,500,0;0,0,500];
+           Eb=[500,0,0;0,500,0;0,0,500];
+           Eab=[30,0,0;0,30,0;0,0,30];
+           Eba=[30,0,0;0,30,0;0,0,30];
+           E=EqCalculate(t,Ea,Eb,Eab,Eba);
        end
 
        if FuncType=='s'    
            diff=points-q;
-           [Potential]= sFunc(diff,m,E,u);
+           [Potential]= sFunc(diff,m,E,u,num);
        elseif FuncType=='g'    
            diff=points-q;
-           [Potential]= gFunc(diff,m,E,u);
+           [Potential]= gFunc(diff,m,E,u,num);
        end
                 
     elseif n>=4

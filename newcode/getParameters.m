@@ -2,7 +2,6 @@ function [m,q,t,ind] = getParameters(points, polyline)
 %UNTITLED6 此处显示有关此函数的摘要
 %   此处显示详细说明
     
-
     [nP,D]=size(points);
     [n,d]=size(polyline);
     if D~=d
@@ -10,8 +9,7 @@ function [m,q,t,ind] = getParameters(points, polyline)
         return
     end
     
-    [dmin, q, t, ind] = MinDistance(points, polyline);
-    
+    [dmin, q, t, ind] = MinDistance3D_HorizVertical(points, polyline);
     Points(:,1,:)=points;
     Points=repmat(Points,1,n,1);
     Polyline(1,:,:) = polyline;
@@ -30,110 +28,125 @@ function [m,q,t,ind] = getParameters(points, polyline)
 end
 
 
+% function [dmin, q, t, ind] = MinDistance(points, polyline)
+%     % 计算点集points中每个点到折线上所有点的最短距离和最短距离点
+% 
+%     [nP,D]=size(points);
+%     [n,d]=size(polyline);
+% 
+%     %转换维度并扩展
+%     Points(:,1,:)=points;
+%     Points=repmat(Points,1,n-1,1);
+%     seg_Start(1,:,:) = polyline(1:end-1, :);
+%     seg_End (1,:,:)= polyline(2:end, :);
+%     seg_Start=repmat(seg_Start,nP,1,1);
+%     seg_End=repmat(seg_End,nP,1,1);
+% 
+%     % 计算点集与线段起点之间的向量
+%     pa = Points - seg_Start ;  
+%     seg = seg_End - seg_Start ;  % 计算线段的向量
+%     T = dot(pa, seg, 3) ./ dot(seg, seg, 3);  % 计算点集到线段的最短距离位置比例
+%     T(T < 0) = 0;  % 将小于0的位置比例设置为0
+%     T(find(T > 1)) = 1;  % 将大于1的位置比例设置为1
+%     Q = seg_Start + T.*seg;  % 计算点集每个点到线段的最短距离点
+%     distance = vecnorm(Points - Q, 2, 3);  % 计算点集每个点到对应最短距离点的欧氏距离
+%     [dmin, I ] = min(distance,[],2);
+%     ind=sub2ind(size(Q), (1:size(Q,1))', I);
+%     t=T(ind);
+%     q=zeros(nP,D);
+%     for i=1:D
+%         q(:,i)=Q(ind+nP*(n-1)*(i-1));
+%     end
+% end
 
-function [dmin, q, t, ind] = MinDistance(points, polyline)
-    % 计算点集points中每个点到折线上所有点的最短距离和最短距离点
 
-    [nP,D]=size(points);
-    [n,d]=size(polyline);
 
-    %转换维度并扩展
-    Points(:,1,:)=points;
-    Points=repmat(Points,1,n-1,1);
 
-    seg_Start(1,:,:) = polyline(1:end-1, :);
-    seg_End (1,:,:)= polyline(2:end, :);
-    seg_Start=repmat(seg_Start,nP,1,1);
-    seg_End=repmat(seg_End,nP,1,1);
+function [dmin, q, t, ind] = MinDistance2D(points, polyline)
+% MinDistance2D 计算二维点集中每个点到二维折线的最短距离
+%
+% 输入：
+%   points   - nP x 2 矩阵，每行表示一个二维点 [x, y]
+%   polyline - n x 2 矩阵，表示二维折线的顶点序列
+%
+% 输出：
+%   dmin     - nP x 1，每个点到折线的最短距离
+%   q        - nP x 2，每个点对应的折线上最近点（投影点）
+%   t        - nP x 1，每个点在对应线段上的投影参数（范围 [0,1]）
+%   ind      - nP x 1，对应最小距离的线段索引
 
-    % 计算点集与线段起点之间的向量
-    pa = Points - seg_Start ;  
-    seg = seg_End - seg_Start ;  % 计算线段的向量
-    T = dot(pa, seg, 3) ./ dot(seg, seg, 3);  % 计算点集到线段的最短距离位置比例
-    T(T < 0) = 0;  % 将小于0的位置比例设置为0
-    T(find(T > 1)) = 1;  % 将大于1的位置比例设置为1
-
-    Q = seg_Start + T.*seg;  % 计算点集每个点到线段的最短距离点
-    distance = vecnorm(Points - Q, 2, 3);  % 计算点集每个点到对应最短距离点的欧氏距离
-    [dmin, I ] = min(distance,[],2);
-    ind=sub2ind(size(Q), (1:size(Q,1))', I);
-    t=T(ind);
-    q=zeros(nP,D);
-    for i=1:D
-        q(:,i)=Q(ind+nP*(n-1)*(i-1));
+    [nP, D] = size(points);
+    [n, d] = size(polyline);
+    if D ~= 2 || d ~= 2
+        error('输入的 points 和 polyline 必须为二维坐标。');
     end
-
-    %--------------------折线---------------------------------------------------
-    % 计算每个点 P 到折线 (由多个线段组成) 的最短距离、最近投影点、投影比例位置和对应的线段索引
-    % 输入:P - n x 2 的矩阵，每行是一个点 (x0, y0)
-    % polyline - m x 2 的矩阵，表示折线上的点，每行表示一个折线上的点 (x, y)
-    % 
-    % n = size(points, 1);  % 点的数量
-    % m = size(polyline, 1);  % 折线上的点的数量
-    % dmin = zeros(n, 1);  % 初始化距离的结果向量
-    % q = zeros(n, 2);  % 初始化最近投影点的矩阵
-    % t = zeros(n, 1);  % 初始化投影比例的位置
-    % ind = zeros(n, 1);  % 初始化投影点的索引
-    % 
-    % % 遍历每个点 points_i
-    % for i = 1:n
-    %     min_dist = inf;  % 初始化最小距离为无穷大
-    %     closest_proj = NaN(1, 2);  % 存储最近的投影点
-    %     best_t = NaN;  % 存储最好的投影比例
-    %     best_ind = NaN;  % 存储最好的线段索引
-    % 
-    %     % 遍历每个线段
-    %     for j = 1:m-1
-    %         A = polyline(j, :);  % 当前线段的起点
-    %         B = polyline(j+1, :);  % 当前线段的终点
-    % 
-    %         % 计算线段 AB 的向量
-    %         AB = B - A;
-    %         AB_mag_sq = dot(AB, AB);  % 计算 AB 向量的平方
-    % 
-    %         % 计算点 P_i 到线段 AB 的向量
-    %         AP = points(i, :) - A;  % 计算 A 到 P_i 的向量
-    % 
-    %         % 计算投影系数 t
-    %         t_val = dot(AP, AB) / AB_mag_sq;  % 计算 t
-    % 
-    %         % 判断投影点是否在线段内
-    %         if t_val < 0
-    %             % 投影点在 A 端点外，返回 P_i 到 A 的距离
-    %             dist_val = norm(AP);
-    %             proj = A;
-    %             t_proj = 0;
-    %             ind_proj = j;  % 对应线段的索引
-    %         elseif t_val > 1
-    %             % 投影点在 B 端点外，返回 P_i 到 B 的距离
-    %             BP = points(i, :) - B;
-    %             dist_val = norm(BP);
-    %             proj = B;
-    %             t_proj = 1;
-    %             ind_proj = j + 1;  % 对应线段的索引
-    %         else
-    %             % 投影点在线段内，返回 P_i 到投影点的距离
-    %             proj = A + t_val * AB;  % 计算投影点的坐标
-    %             dist_val = norm(points(i, :) - proj);  % 计算 P_i 到投影点的距离
-    %             t_proj = t_val;  % 投影比例
-    %             ind_proj = j;  % 对应线段的索引
-    %         end
-    % 
-    %         % 如果计算得到的距离更小，更新最短距离和投影点
-    %         if dist_val < min_dist
-    %             min_dist = dist_val;
-    %             closest_proj = proj;
-    %             best_t = t_proj;
-    %             best_ind = ind_proj;
-    %         end
-    %     end
-    % 
-    %     % 存储结果
-    %     dmin(i) = min_dist;  % 最短距离
-    %     q(i, :) = closest_proj;  % 最近投影点
-    %     t(i) = best_t;  % 投影比例
-    %     ind(i) = best_ind;  % 最近投影点所在线段的索引
-    % end
-    %--------------------折线---------------------------------------------------
-end
     
+    % 重塑 points 为 nP x 1 x 2 数组
+    Points = reshape(points, [nP, 1, D]);
+    Points = repmat(Points, [1, n-1, 1]);
+    
+    % 构造线段起点和终点
+    seg_Start = polyline(1:end-1, :); % (n-1) x 2
+    seg_End = polyline(2:end, :);       % (n-1) x 2
+    seg_Start = reshape(seg_Start, [1, n-1, d]);
+    seg_End = reshape(seg_End, [1, n-1, d]);
+    seg_Start = repmat(seg_Start, [nP, 1, 1]);
+    seg_End = repmat(seg_End, [nP, 1, 1]);
+    
+    % 计算从起点到每个点的向量差
+    pa = Points - seg_Start;
+    seg = seg_End - seg_Start;
+    
+    % 计算投影参数 T
+    T = dot(pa, seg, 3) ./ dot(seg, seg, 3);
+    T(T < 0) = 0;
+    T(T > 1) = 1;
+    
+    % 计算投影点 Q
+    T_expanded = repmat(T, [1, 1, d]);
+    Q = seg_Start + T_expanded .* seg;
+    
+    % 计算欧氏距离
+    distance = sqrt(sum((Points - Q).^2, 3));
+    
+    % 找到最小距离及对应索引
+    [dmin, I] = min(distance, [], 2);
+    ind = sub2ind(size(Q), (1:nP)', I);
+    t = T(ind);
+    
+    % 提取对应二维最近点坐标
+    q = zeros(nP, d);
+    for i = 1:d
+        q(:, i) = Q(ind + nP*(n-1)*(i-1));
+    end
+end
+
+
+function [dmin, q, t, ind] = MinDistance3D_HorizVertical(points, polyline)
+    % points: nP x 3 网格点坐标 [x,y,z]
+    % polyline: n x 3 曲线坐标，其中所有 z 值相同（例如 z = z0）
+    
+    % 分离水平 (x,y) 和垂直 (z) 分量
+    points_xy = points(:, 1:2);
+    polyline_xy = polyline(:, 1:2);
+    
+    % 调用二维最短距离计算函数
+    [dmin_xy, q_xy, t, ind] = MinDistance2D(points_xy, polyline_xy);
+    
+    % 曲线 z 值（假设所有点 z 均相同）
+    z0 = polyline(1, 3);
+    
+    % 计算垂直距离
+    d_vertical = abs(points(:, 3) - z0);
+    
+    % 合成全 3D 距离
+    dmin = sqrt(dmin_xy.^2 + d_vertical.^2);
+    
+    % 构造全 3D 最近点坐标
+    q = [q_xy, repmat(z0, size(points,1), 1)];
+    
+end
+
+
+
+

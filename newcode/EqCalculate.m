@@ -1,6 +1,5 @@
 function [Eq] = EqCalculate(t, Ea, Eb, Eab, Eba)
 %Éú³É´ø¿í¾ØÕóEq
-
     W=[Ea, Eab; Eba, Eb];
     [m,n] = size(W);
     E1 = zeros(n/2 , m/2);
